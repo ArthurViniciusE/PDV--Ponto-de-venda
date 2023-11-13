@@ -1,5 +1,6 @@
 package com.avsb.pdv.controller;
 
+import com.avsb.pdv.dto.ResponseDTO;
 import com.avsb.pdv.dto.SaleDTO;
 import com.avsb.pdv.exceptions.InvalidOperationException;
 import com.avsb.pdv.exceptions.NoItemException;
@@ -40,12 +41,12 @@ public class SaleController {
 
         try {
             long id = saleService.save(saleDTO);
-            return new ResponseEntity<>("Venda realizada com sucesso: " + id, HttpStatus.CREATED);
+            return new ResponseEntity<>(new ResponseDTO("Venda realizada com sucesso!") , HttpStatus.CREATED);
         }catch (NoItemException | InvalidOperationException error){
-            return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.BAD_REQUEST);
         }
         catch (Exception error){
-            return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
