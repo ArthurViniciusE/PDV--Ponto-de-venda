@@ -18,9 +18,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,32 +35,37 @@ public class SaleService {
     private final SaleRepository saleRepository;
     private final ItemSaleRepository itemSaleRepository;
 
-    public List<SaleInfoDTO> findAll(){
+    public List<SaleInfoDTO> findAll() {
         return saleRepository.findAll().stream().map(sale -> getSaleInfo(sale)).collect(Collectors.toList());
     }
 
     private SaleInfoDTO getSaleInfo(Sale sale) {
-        SaleInfoDTO saleInfoDTO = new SaleInfoDTO();
-        saleInfoDTO.setUser(sale.getUser().getName());
-        saleInfoDTO.setDate(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        saleInfoDTO.setProducts(getProductInfo(sale.getItems()));
 
-        return saleInfoDTO;
+        return SaleInfoDTO.builder()
+                .user(sale.getUser().getName())
+                .date(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .products(getProductInfo(sale.getItems()))
+                .build();
     }
 
     private List<ProductInfoDTO> getProductInfo(List<ItemSale> items) {
-        return items.stream().map(item -> {
-            ProductInfoDTO productInfoDTO = new ProductInfoDTO();
-            productInfoDTO.setId(item.getId());
-            productInfoDTO.setDescription(item.getProduct().getDescription());
-            productInfoDTO.setQuantity(item.getQuantity());
 
-            return  productInfoDTO;
-        }).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(items)) {
+            return Collections.emptyList();
+        }
+
+        return items.stream().map(
+                item -> ProductInfoDTO
+                        .builder()
+                        .description(item.getProduct().getDescription())
+                        .quantity(item.getQuantity())
+                        .id(item.getId())
+                        .build()
+        ).collect(Collectors.toList());
     }
 
     @Transactional
-    public long save(SaleDTO sale){
+    public long save(SaleDTO sale) {
         User user = userRepository.findById(sale.getUserid())
                 .orElseThrow(() -> new NoItemException("Usuário não encontrado"));
 
@@ -75,30 +82,30 @@ public class SaleService {
     }
 
     private void saveItemSale(List<ItemSale> items, Sale newSale) {
-        for (ItemSale item: items){
+        for (ItemSale item : items) {
             item.setSale(newSale);
             itemSaleRepository.save(item);
         }
     }
 
-    private List<ItemSale> getItemSale(List<ProductDTO> products){
+    private List<ItemSale> getItemSale(List<ProductDTO> products) {
 
-        if(products.isEmpty()){
+        if (products.isEmpty()) {
             throw new InvalidOperationException("Não é possível adicionar a venda sem itens.");
         }
 
-        return products.stream().map(item ->{
+        return products.stream().map(item -> {
             Product product = productRepository.getReferenceById(item.getProductid());
 
             ItemSale itemSale = new ItemSale();
             itemSale.setProduct(product);
             itemSale.setQuantity(item.getQuantity());
 
-            if(product.getQuantity() == 0){
+            if (product.getQuantity() == 0) {
                 throw new NoItemException("Produto sem estoque!");
             } else if (product.getQuantity() < item.getQuantity()) {
                 throw new InvalidOperationException(
-                        String.format("A quantidade de itens da venda (%s) é maior do que a quantidade disponível no estoque (%s)",item.getQuantity(), product.getQuantity()));
+                        String.format("A quantidade de itens da venda (%s) é maior do que a quantidade disponível no estoque (%s)", item.getQuantity(), product.getQuantity()));
             }
 
             int total = product.getQuantity() - item.getQuantity();
