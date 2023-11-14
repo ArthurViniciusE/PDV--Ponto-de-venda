@@ -2,6 +2,7 @@ package com.avsb.pdv.controller;
 
 
 import com.avsb.pdv.dto.ResponseDTO;
+import com.avsb.pdv.dto.UserDTO;
 import com.avsb.pdv.entity.User;
 import com.avsb.pdv.exceptions.NoItemException;
 import com.avsb.pdv.service.UserService;
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity post(@Valid @RequestBody User user) {
+    public ResponseEntity post(@Valid @RequestBody UserDTO user) {
         try {
             user.setEneabled(true);
             return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
@@ -41,7 +42,7 @@ public class UserController {
     }
 
     @PutMapping()
-    public ResponseEntity put(@Valid @RequestBody User user) {
+    public ResponseEntity put(@Valid @RequestBody UserDTO user) {
         try {
             return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
         } catch (Exception error) {

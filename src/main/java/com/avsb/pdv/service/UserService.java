@@ -17,38 +17,46 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<UserDTO> findAll(){
+    public List<UserDTO> findAll() {
         return userRepository.findAll().stream().map(user ->
-                new UserDTO(user.getId(),user.getName(),user.isEneabled())).collect(Collectors.toList());
+                new UserDTO(user.getId(), user.getName(), user.isEneabled())).collect(Collectors.toList());
     }
 
-    public UserDTO save(User user){
-        userRepository.save(user);
-        return new UserDTO(user.getId(),user.getName(),user.isEneabled());
+    public UserDTO save(UserDTO user) {
+        User userToSave = new User();
+        userToSave.setEneabled(user.isEneabled());
+        userToSave.setName(user.getName());
+        userRepository.save(userToSave);
+        return new UserDTO(userToSave.getId(), userToSave.getName(), userToSave.isEneabled());
     }
 
-    public UserDTO findById(long id){
+    public UserDTO findById(long id) {
         Optional<User> optional = userRepository.findById(id);
 
-        if(!optional.isPresent()){
+        if (!optional.isPresent()) {
             throw new NoItemException("Usuário não encontrado!");
         }
         User user = optional.get();
-        return new UserDTO(user.getId(),user.getName(),user.isEneabled());
+        return new UserDTO(user.getId(), user.getName(), user.isEneabled());
     }
 
-    public UserDTO update(User user){
-        Optional<User> userToEdit = userRepository.findById(user.getId());
+    public UserDTO update(UserDTO user) {
+        User userToSave = new User();
+        userToSave.setEneabled(user.isEneabled());
+        userToSave.setName(user.getName());
+        userToSave.setId(user.getId());
 
-        if(!userToEdit.isPresent()){
+        Optional<User> userToEdit = userRepository.findById(userToSave.getId());
+
+        if (!userToEdit.isPresent()) {
             throw new NoItemException("Usuário não encontrado!");
         }
 
-        userRepository.save(user);
-        return new UserDTO(user.getId(),user.getName(),user.isEneabled());
+        userRepository.save(userToSave);
+        return new UserDTO(userToSave.getId(), userToSave.getName(), userToSave.isEneabled());
     }
 
-    public void deleteById(long id){
+    public void deleteById(long id) {
         userRepository.deleteById(id);
     }
 }
