@@ -20,46 +20,43 @@ public class UserController {
 
     private UserService userService;
 
-    public UserController(@Autowired UserService userService){
+    public UserController(@Autowired UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping()
-    public ResponseEntity getAll(){
+    public ResponseEntity getAll() {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity post(@RequestBody User user){
+    public ResponseEntity post(@RequestBody User user) {
         try {
             user.setEneabled(true);
-            return new ResponseEntity<>(userService.save(user),HttpStatus.CREATED);
-        }catch (Exception error){
+            return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
+        } catch (Exception error) {
             return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping()
-    public ResponseEntity put(@RequestBody User user){
-        try{
+    public ResponseEntity put(@RequestBody User user) {
+        try {
             return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
-        }catch (NoItemException error){
-            return new ResponseEntity<>(new ResponseDTO (error.getMessage()), HttpStatus.BAD_REQUEST);
-        }catch (Exception error){
-            return new ResponseEntity<>(new ResponseDTO (error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception error) {
+            return new ResponseEntity<>(new ResponseDTO(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable long id){
-        try{
+    public ResponseEntity delete(@PathVariable long id) {
+        try {
             userService.deleteById(id);
-            return new ResponseEntity<>(new ResponseDTO("Usuário removido com sucesso!"),HttpStatus.OK);
-        }
-        catch (EmptyResultDataAccessException error){
-            return new ResponseEntity<>(new ResponseDTO("Não foi possível localizar o usuário!"),HttpStatus.BAD_REQUEST);
-        }catch (Exception error){
-            return new ResponseEntity<>(error.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDTO("Usuário removido com sucesso!"), HttpStatus.OK);
+        } catch (EmptyResultDataAccessException error) {
+            return new ResponseEntity<>(new ResponseDTO("Não foi possível localizar o usuário!"), HttpStatus.BAD_REQUEST);
+        } catch (Exception error) {
+            return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

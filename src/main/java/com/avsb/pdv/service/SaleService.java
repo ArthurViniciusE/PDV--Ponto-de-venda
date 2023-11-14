@@ -16,7 +16,6 @@ import com.avsb.pdv.repository.SaleRepository;
 import com.avsb.pdv.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -36,7 +35,7 @@ public class SaleService {
     private final ItemSaleRepository itemSaleRepository;
 
     public List<SaleInfoDTO> findAll() {
-        return saleRepository.findAll().stream().map(sale -> getSaleInfo(sale)).collect(Collectors.toList());
+        return saleRepository.findAll().stream().map(this::getSaleInfo).collect(Collectors.toList());
     }
 
     private SaleInfoDTO getSaleInfo(Sale sale) {
