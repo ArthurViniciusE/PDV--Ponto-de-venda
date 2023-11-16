@@ -3,8 +3,6 @@ package com.avsb.pdv.controller;
 
 import com.avsb.pdv.dto.ResponseDTO;
 import com.avsb.pdv.dto.UserDTO;
-import com.avsb.pdv.entity.User;
-import com.avsb.pdv.exceptions.NoItemException;
 import com.avsb.pdv.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
