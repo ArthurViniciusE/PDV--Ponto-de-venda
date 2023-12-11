@@ -3,7 +3,7 @@ package com.avsb.pdv.controller;
 import com.avsb.pdv.dto.ResponseDTO;
 import com.avsb.pdv.dto.SaleDTO;
 import com.avsb.pdv.service.SaleService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

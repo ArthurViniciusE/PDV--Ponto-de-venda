@@ -1,7 +1,7 @@
 package com.avsb.pdv.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;

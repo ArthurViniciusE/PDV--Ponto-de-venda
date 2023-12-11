@@ -14,7 +14,7 @@ import com.avsb.pdv.repository.ItemSaleRepository;
 import com.avsb.pdv.repository.ProductRepository;
 import com.avsb.pdv.repository.SaleRepository;
 import com.avsb.pdv.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
